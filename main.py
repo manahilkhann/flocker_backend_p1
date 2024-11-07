@@ -224,3 +224,31 @@ app.cli.add_command(custom_cli)
 if __name__ == "__main__":
     # change name for testing
     app.run(debug=True, host="0.0.0.0", port="8887")
+
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+# Sample users for authentication
+users = {
+    'toby': '123Toby!',
+    'hop': '123Hop!',
+    'niko': '123niko!'
+}
+
+@app.route('/api/authenticate', methods=['POST'])
+def authenticate():
+    # Get user credentials from the POST request
+    data = request.get_json()
+
+    # Check if the provided user ID and password are correct
+    uid = data.get('uid')
+    password = data.get('password')
+
+    if users.get(uid) == password:
+        return jsonify({"message": "Authentification successful!"}), 401
+    else:
+        return jsonify({"message": "Invalid credentials!"}), 401
+
+if __name__ == '__main__':
+    app.run(debug=True, port=8887)
